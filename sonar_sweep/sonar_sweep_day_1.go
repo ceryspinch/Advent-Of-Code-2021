@@ -36,7 +36,6 @@ func readInput() ([]int, error) {
     if err := scanner.Err(); err != nil {
         log.Fatal(err)
     }
-	fmt.Println(len(inputList))
 	return inputList, nil
 }
 
@@ -61,7 +60,35 @@ func Puzzle_One() (int, error) {
 	return result, nil
 }
 
+// Puzzle_Two returns the result of puzzle two of Sonar Sweep (day 1 of AoC)
+// It returns the number of sums of a three measurement sliding window
+// that are greater than the sum of the previous group of three numbers.
+func Puzzle_Two() (int, error) {
+	inputList, err := readInput()
+	if err != nil {
+		return 0, err
+	}
+
+	result := 0 
+
+	for i := 1; i + 2 < len(inputList); i++ {
+		sumA := inputList[i-1] + inputList[i] + inputList[i+1]
+		sumB := inputList[i] + inputList[i+1] + inputList[i+2]
+		if sumB > sumA {
+			result++
+		}
+	}
+	return result, nil
+}
+
 func main() {
-	x, _ := Puzzle_One()
-	fmt.Println(x)
+	sol1, err := Puzzle_One()
+	if err != nil {
+		fmt.Println("There was an error getting the solution to puzzle 1")
+	}
+	sol2, _ := Puzzle_Two()
+	if err != nil {
+		fmt.Println("There was an error getting the solution to puzzle 2")
+	}
+	fmt.Println("Puzzle one solution: ", sol1, " puzzle two solution: ", sol2)
 }
