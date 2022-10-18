@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	//"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -81,14 +81,14 @@ func Puzzle_Two() (int, error) {
 	return result, nil
 }
 
-func main() {
-	sol1, err := Puzzle_One()
-	if err != nil {
-		fmt.Println("There was an error getting the solution to puzzle 1")
-	}
-	sol2, _ := Puzzle_Two()
-	if err != nil {
-		fmt.Println("There was an error getting the solution to puzzle 2")
-	}
-	fmt.Println("Puzzle one solution: ", sol1, " puzzle two solution: ", sol2)
-}
+// func main() {
+// 	sol1, err := Puzzle_One()
+// 	if err != nil {
+// 		fmt.Println("There was an error getting the solution to puzzle 1")
+// 	}
+// 	sol2, _ := Puzzle_Two()
+// 	if err != nil {
+// 		fmt.Println("There was an error getting the solution to puzzle 2")
+// 	}
+// 	fmt.Println("Puzzle one solution: ", sol1, " puzzle two solution: ", sol2)
+// }
