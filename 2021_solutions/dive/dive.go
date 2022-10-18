@@ -55,7 +55,7 @@ func get_Horizontal_Position_And_Depth_One() (int, int, error) {
 
 	for _, input := range inputList {
 		// Split input line into array with two items (direction and value)
-		sections := strings.Fields(input)
+		sections := strings.Split(input, " ")
 		direction = sections[i]
 		valueAsString := sections[i+1]
 		value, _ = strconv.Atoi(valueAsString)
@@ -135,16 +135,16 @@ func Puzzle_Two() (int, error) {
 	return product, nil
 }
 
-func main() {
-	result1, err := Puzzle_One()
-	if err != nil {
-		fmt.Println("There was an error getting the solution to puzzle 1")
-	}
-	fmt.Println(result1)
+// func main() {
+// 	result1, err := Puzzle_One()
+// 	if err != nil {
+// 		fmt.Println("There was an error getting the solution to puzzle 1")
+// 	}
+// 	fmt.Println(result1)
 
-	result2, err := Puzzle_Two()
-	if err != nil {
-		fmt.Println("There was an error getting the solution to puzzle 2")
-	}
-	fmt.Println(result2)
-}
+// 	result2, err := Puzzle_Two()
+// 	if err != nil {
+// 		fmt.Println("There was an error getting the solution to puzzle 2")
+// 	}
+// 	fmt.Println(result2)
+// }
