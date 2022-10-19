@@ -1,49 +1,35 @@
 package main
 
 import (
-	"bufio"
+	fileReader "advent-of-code/utils"
 	//"fmt"
-	"log"
-	"os"
 	"strconv"
 )
 
-// read_Input reads in a text file and populates a struct
-// with the numbers in the file.
-func readInput() ([]int, error) {
-	file, err := os.Open("input.txt")
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer file.Close()
+func convert_Input_List_To_Int() ([]int, error){
+	inputList, err := fileReader.ReadInput()
+	if err != nil {
+		return nil, err
+	}
 
-	// Initialize slice to store input
-	var inputList []int
-
-	// Create scanner with the file read in
-    scanner := bufio.NewScanner(file)
-
-	// Store each line (number) in the input file in the slice
-    for scanner.Scan() {
-		numAsString := scanner.Text()
-		num, err := strconv.Atoi(numAsString)
+	var inputListInt []int
+	for _, line := range inputList {
+		num, err := strconv.Atoi(line)
 		if err != nil {
 			return nil, err
 		}
-		inputList = append(inputList, num)
-    }
+		inputListInt = append(inputListInt, num)
+	}
 
-    if err := scanner.Err(); err != nil {
-        log.Fatal(err)
-    }
-	return inputList, nil
+	return inputListInt, nil
+
 }
 
 // Puzzle_One returns the result of puzzle one of Sonar Sweep (day 1 of AoC)
 // It returns the number of entries in the input list that are greater than the 
 // previous entry.
 func Puzzle_One() (int, error) {
-	inputList, err := readInput()
+	inputList, err := convert_Input_List_To_Int()
 	if err != nil {
 		return 0, err
 	}
@@ -64,7 +50,7 @@ func Puzzle_One() (int, error) {
 // It returns the number of sums of a three measurement sliding window
 // that are greater than the sum of the previous group of three numbers.
 func Puzzle_Two() (int, error) {
-	inputList, err := readInput()
+	inputList, err := fileReader.ReadInput()
 	if err != nil {
 		return 0, err
 	}

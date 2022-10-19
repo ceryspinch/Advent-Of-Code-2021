@@ -1,102 +1,130 @@
 package main
 
 import (
-	"bufio"
+	fileReader "advent-of-code/utils"
 	"fmt"
-	"log"
-	"os"
 	"strconv"
 )
 
-// read_Input reads in a text file and populates a struct
-// with the numbers in the file.
-func readInput() ([]string, error) {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
+// most_And_Least_Common_Bit returns the most and least common bit in index i
+// of all lines in the input file
+func most_And_Least_Common_Bit(inputList []string, i int) (uint8, uint8) {
+	zeroCount := 0
+	oneCount := 0
 
-	// Initialize slice to store input
-	var inputList []string
-
-	// Create scanner with the file read in
-	scanner := bufio.NewScanner(file)
-
-	// Store each line (number) in the input file in the slice
-	for scanner.Scan() {
-		numAsString := scanner.Text()
-		if err != nil {
-			return nil, err
+	for _, line := range inputList {
+		if line[i] == '0' {
+			zeroCount++
+		} else {
+			oneCount++
 		}
-		inputList = append(inputList, numAsString)
 	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+	if zeroCount > oneCount {
+		return '0', '1'
 	}
-	return inputList, nil
+	return '1', '0'
 }
 
-// get_Gamma_And_Epsilon_Rate gets the gamma and epsilon rate 
+// convert_Binary_String_To_Decimal converts a binary string to a decimal
+// number to be used in multiplication
+func convert_Binary_String_To_Decimal(binaryString string) (int64, error) {
+	decimalNumber, err := strconv.ParseInt(binaryString, 2, 64)
+	if err != nil {
+		return 0, err
+	}
+	return decimalNumber, nil
+}
+
+// get_Gamma_And_Epsilon_Rate gets the gamma and epsilon rate
 // as decimal numbers from the input list
 func get_Gamma_And_Epsilon_Rate() (int64, int64, error) {
-	inputList, err := readInput()
+	inputList, err := fileReader.ReadInput()
 	if err != nil {
 		fmt.Println("error")
 	}
 
-	// Create array to store the number of 0's present in the list at each index
-	var zeroCount [12]int
-
 	gammaString := ""
 	epsilonString := ""
 
-	for _, line := range inputList {
-		for i, bit := range line {
-			if bit == '0' {
-				zeroCount[i] += 1
-			}
-		}
+	for i := 0; i < len(inputList[0]); i++ {
+		mostCommon, leastCommon := most_And_Least_Common_Bit(inputList, i)
+		gammaString += string(mostCommon)
+		epsilonString += string(leastCommon)
 	}
 
-	for _, count := range zeroCount {
-		if count > len(inputList)/2 {
-			gammaString += "0"
-			epsilonString += "1"
-		} else {
-			gammaString += "1"
-			epsilonString += "0"
-		}
-	}
-
-	// Convert binary numbers to decimals
-	gamma, err := strconv.ParseInt(gammaString, 2, 64) 
+	// Convert binary string to decimal number to be used to answer puzzle
+	gamma, err := convert_Binary_String_To_Decimal(gammaString)
 	if err != nil {
 		return 0, 0, err
 	}
-	epsilon, err := strconv.ParseInt(epsilonString, 2, 64)
+	epsilon, err := convert_Binary_String_To_Decimal(epsilonString)
 	if err != nil {
 		return 0, 0, err
 	}
-
+	//fmt.Println(gamma, " ", epsilon)
 	return gamma, epsilon, nil
 }
 
+func get_Oxygen_Generator_And_CO2_Scrubber_Rating(inputList []string, i int, useMostCommmon bool) string {
+	// Base case for recursion
+	if len(inputList) == 1 {
+		return inputList[0]
+	}
 
-func Puzzle_One() (int64, error){
+	mostCommon, leastCommon := most_And_Least_Common_Bit(inputList, i)
+	comparator := leastCommon
+
+	// Check if calculating oxygen generator rating (using most common bit if a tie)
+	if useMostCommmon {
+		comparator = mostCommon
+	}
+
+	var tempInputList []string
+
+	for _, line := range inputList {
+		if line[i] == comparator {
+			tempInputList = append(tempInputList, line)
+		}
+	}
+	return get_Oxygen_Generator_And_CO2_Scrubber_Rating(tempInputList, i+1, useMostCommmon)
+}
+
+// Puzzle_One returns the result of puzzle one of Binary Diagnostic (day 3 of AoC)
+// It returns the product of the gamma and epsilon rates
+func Puzzle_One() (int64, error) {
 	gamma, epsilon, err := get_Gamma_And_Epsilon_Rate()
 	if err != nil {
 		return 0, err
-	} 
+	}
 	return gamma * epsilon, nil
 }
 
+// Puzzle_Two returns the result of puzzle two of Binary Diagnostic (day 3 of AoC)
+// It returns the product of the oxygenGeneratorRate and CO2ScrubberRate rates
+func Puzzle_Two() (int64, error) {
+	inputList, err := fileReader.ReadInput()
+	if err != nil {
+		fmt.Println("error")
+	}
+	oxygenGeneratorRateBinary := get_Oxygen_Generator_And_CO2_Scrubber_Rating(inputList, 0, true)
+	CO2ScrubberRateBinary := get_Oxygen_Generator_And_CO2_Scrubber_Rating(inputList, 0, false)
+
+	// Convert binary strings to decimal numbers for multiplication
+	oxygenGeneratorRate, _ := convert_Binary_String_To_Decimal(oxygenGeneratorRateBinary)
+	CO2ScrubberRate, _ := convert_Binary_String_To_Decimal(CO2ScrubberRateBinary)
+
+	return oxygenGeneratorRate * CO2ScrubberRate, nil
+}
 
 func main() {
-	result1, err := Puzzle_One()
+	sol1, err := Puzzle_One()
 	if err != nil {
 		fmt.Println("There was an error getting the solution to puzzle 1")
 	}
-	fmt.Println(result1)
+	fmt.Println(sol1)
+	sol2, err := Puzzle_Two()
+	if err != nil {
+		fmt.Println("There was an error getting the solution to puzzle 2")
+	}
+	fmt.Println(sol2)
 }
