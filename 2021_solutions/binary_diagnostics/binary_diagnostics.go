@@ -116,15 +116,15 @@ func Puzzle_Two() (int64, error) {
 	return oxygenGeneratorRate * CO2ScrubberRate, nil
 }
 
-func main() {
-	sol1, err := Puzzle_One()
-	if err != nil {
-		fmt.Println("There was an error getting the solution to puzzle 1")
-	}
-	fmt.Println(sol1)
-	sol2, err := Puzzle_Two()
-	if err != nil {
-		fmt.Println("There was an error getting the solution to puzzle 2")
-	}
-	fmt.Println(sol2)
-}
+// func main() {
+// 	sol1, err := Puzzle_One()
+// 	if err != nil {
+// 		fmt.Println("There was an error getting the solution to puzzle 1")
+// 	}
+// 	fmt.Println(sol1)
+// 	sol2, err := Puzzle_Two()
+// 	if err != nil {
+// 		fmt.Println("There was an error getting the solution to puzzle 2")
+// 	}
+// 	fmt.Println(sol2)
+// }
