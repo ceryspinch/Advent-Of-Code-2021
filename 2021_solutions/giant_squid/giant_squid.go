@@ -14,15 +14,16 @@ type BingoNumber struct {
 }
 
 type BingoBoard struct {
+	ID      int
 	Numbers [][]BingoNumber
-	Won bool
+	Won     bool
 }
 
 func drawNumbers() ([]int, error) {
 	inputList, err := fileReader.ReadInput()
 	if err != nil {
 		fmt.Println("error reading input.txt")
-	} 
+	}
 
 	numbersToCallString := strings.Split(inputList[0], ",")
 	var numbersToCall []int
@@ -32,7 +33,7 @@ func drawNumbers() ([]int, error) {
 		numAsInt, err := strconv.Atoi(num)
 		if err != nil {
 			return nil, err
-		} 
+		}
 		numbersToCall = append(numbersToCall, numAsInt)
 	}
 
@@ -45,7 +46,7 @@ func getBoards() ([]BingoBoard, error) {
 	if err != nil {
 		fmt.Println("error reading input.txt")
 		return nil, err
-	} 
+	}
 
 	// Discard first line from input list as that has been handled already
 	boardNumbersInput := inputList[1:]
@@ -53,6 +54,7 @@ func getBoards() ([]BingoBoard, error) {
 	var bingoBoards []BingoBoard
 
 	board := createNewBoard()
+	board.ID = 0
 	space := regexp.MustCompile(`\s+`)
 	currentBoardRow := 0
 
@@ -83,6 +85,7 @@ func getBoards() ([]BingoBoard, error) {
 		if currentBoardRow == 4 {
 			bingoBoards = append(bingoBoards, board)
 			board = createNewBoard()
+			board.ID = len(bingoBoards)
 			currentBoardRow = 0
 		} else {
 			currentBoardRow++
@@ -90,7 +93,6 @@ func getBoards() ([]BingoBoard, error) {
 	}
 	return bingoBoards, nil
 }
-
 
 // newBoard creates a new BingoBoard
 func createNewBoard() BingoBoard {
@@ -104,22 +106,6 @@ func createNewBoard() BingoBoard {
 	}
 
 	return board
-}
-
-// markNumbers marks the numbers on a board if they have been drawn
-func markNumbers(drawnNumbers []int, boards []BingoBoard) []BingoBoard {
-	for _, number := range drawnNumbers {
-		for _, board := range boards {
-			for i := 0; i < 5; i++ {
-				for j := 0; j < 5; j++ {
-					if board.Numbers[i][j].Number == number {
-						board.Numbers[i][j].Marked = true
-					}
-				}
-			}
-		}
-	}
-	return boards
 }
 
 // getWinningBoards returns any bingo boards that have won with the numbers drawn
@@ -168,7 +154,7 @@ func getWinningBoards(boards []BingoBoard) []BingoBoard {
 	return winningBoards
 }
 
-// getScoreOfWinningBoard returns the sum of the numbers that have not been 
+// getScoreOfWinningBoard returns the sum of the numbers that have not been
 // marked on a winning board multiplied by the winning number
 func getScoreOfWinningBoard(winningNumber int, winningBoard BingoBoard) int {
 	score := 0
@@ -184,8 +170,8 @@ func getScoreOfWinningBoard(winningNumber int, winningBoard BingoBoard) int {
 
 // PuzzleOne returns the answer of puzzle one of Giant Squid (day 4 of AoC).
 func PuzzleOne() (int, error) {
-	
 	scoreOfWinningBoard := 0
+
 	drawnNumbers, err := drawNumbers()
 	if err != nil {
 		fmt.Println("error retrieving the numbers drawn")
@@ -197,6 +183,49 @@ func PuzzleOne() (int, error) {
 		return scoreOfWinningBoard, err
 	}
 
+	// Mark drawn numbers on the boards
+	for _, number := range drawnNumbers {
+		for _, board := range boards {
+			for i := 0; i < 5; i++ {
+				for j := 0; j < 5; j++ {
+					if board.Numbers[i][j].Number == number {
+						board.Numbers[i][j].Marked = true
+					}
+				}
+			}
+		}
+
+		// Get score of first winning board
+		winningBoards := getWinningBoards(boards)
+		if len(winningBoards) == 0 {
+			continue
+		} else {
+			scoreOfWinningBoard = getScoreOfWinningBoard(number, winningBoards[0])
+			return scoreOfWinningBoard, nil
+		}
+
+	}
+	return scoreOfWinningBoard, nil
+}
+
+// PuzzleTwo returns the answer of puzzle two of Giant Squid (day 4 of AoC).
+func PuzzleTwo() (int, error) {
+
+	scoreOfLastWinningBoard := 0
+	drawnNumbers, err := drawNumbers()
+	if err != nil {
+		fmt.Println("error retrieving the numbers drawn")
+		return scoreOfLastWinningBoard, err
+	}
+	boards, err := getBoards()
+	if err != nil {
+		fmt.Println("error retrieving the numbers drawn")
+		return scoreOfLastWinningBoard, err
+	}
+
+	wonBoardsCount := 0
+
+	// Mark drawn numbers on the boards
 	for _, number := range drawnNumbers {
 		for _, board := range boards {
 			for i := 0; i < 5; i++ {
@@ -212,15 +241,30 @@ func PuzzleOne() (int, error) {
 		if len(winningBoards) == 0 {
 			continue
 		} else {
-			scoreOfWinningBoard = getScoreOfWinningBoard(number, winningBoards[0])
-			return scoreOfWinningBoard, nil
+			for _, board := range winningBoards {
+
+				if boards[board.ID].Won {
+					continue
+				}
+				wonBoardsCount++
+				boards[board.ID].Won = true
+
+				// Last winning board
+				if wonBoardsCount == len(boards) || number == drawnNumbers[len(drawnNumbers)-1] {
+					scoreOfLastWinningBoard = getScoreOfWinningBoard(number, board)
+					return scoreOfLastWinningBoard, nil
+				}
+			}
 		}
 
 	}
-	return scoreOfWinningBoard, nil
+	return scoreOfLastWinningBoard, nil
 }
 
 func main() {
-	 score, _ := PuzzleOne()
-	 fmt.Println(score)
+	score1, _ := PuzzleOne()
+	fmt.Println(score1)
+
+	score2, _ := PuzzleTwo()
+	fmt.Println(score2)
 }

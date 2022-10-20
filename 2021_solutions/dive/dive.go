@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-// get_Horizontal_Position_And_Depth_One calculates the final horizontal
+// getHorizontalPositionAndDepthOne calculates the final horizontal
 // position and depth of the submarine using the input list
-func get_Horizontal_Position_And_Depth(considerAim bool) (int, int, error) {
+func getHorizontalPositionAndDepth(considerAim bool) (int, int, error) {
 	inputList, err := fileReader.ReadInput()
 	if err != nil {
 		fmt.Println("error")
@@ -55,20 +55,20 @@ func get_Horizontal_Position_And_Depth(considerAim bool) (int, int, error) {
 	return horizontalPosition, depth, nil
 }
 
-// Puzzle_One returns the answer to puzzle one of dive (day 2 of AoC),
+// PuzzleOne returns the answer to puzzle one of dive (day 2 of AoC),
 // it multiplies the horizontal position and depth to return the product
-func Puzzle_One() (int, error) {
-	horizontalPosition, depth, err := get_Horizontal_Position_And_Depth(false)
+func PuzzleOne() (int, error) {
+	horizontalPosition, depth, err := getHorizontalPositionAndDepth(false)
 	if err != nil {
 		return 0, err
 	}
 	return horizontalPosition * depth, nil
 }
 
-// Puzzle_Two returns the answer to puzzle two of dive (day 2 of AoC),
+// PuzzleTwo returns the answer to puzzle two of dive (day 2 of AoC),
 // it multiplies the horizontal position and depth to return the product
-func Puzzle_Two() (int, error) {
-	horizontalPosition, depth, err := get_Horizontal_Position_And_Depth(true)
+func PuzzleTwo() (int, error) {
+	horizontalPosition, depth, err := getHorizontalPositionAndDepth(true)
 	if err != nil {
 		return 0, err
 	}
@@ -76,13 +76,13 @@ func Puzzle_Two() (int, error) {
 }
 
 // func main() {
-// 	result1, err := Puzzle_One()
+// 	result1, err := PuzzleOne()
 // 	if err != nil {
 // 		fmt.Println("There was an error getting the solution to puzzle 1")
 // 	}
 // 	fmt.Println(result1)
 
-// 	result2, err := Puzzle_Two()
+// 	result2, err := PuzzleTwo()
 // 	if err != nil {
 // 		fmt.Println("There was an error getting the solution to puzzle 2")
 // 	}

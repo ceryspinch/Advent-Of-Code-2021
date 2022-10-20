@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func convert_Input_List_To_Int() ([]int, error){
+func convertInputListToInt() ([]int, error){
 	inputList, err := fileReader.ReadInput()
 	if err != nil {
 		return nil, err
@@ -25,11 +25,11 @@ func convert_Input_List_To_Int() ([]int, error){
 
 }
 
-// Puzzle_One returns the result of puzzle one of Sonar Sweep (day 1 of AoC)
+// PuzzleOne returns the result of puzzle one of Sonar Sweep (day 1 of AoC)
 // It returns the number of entries in the input list that are greater than the 
 // previous entry.
-func Puzzle_One() (int, error) {
-	inputList, err := convert_Input_List_To_Int()
+func PuzzleOne() (int, error) {
+	inputList, err := convertInputListToInt()
 	if err != nil {
 		return 0, err
 	}
@@ -46,10 +46,10 @@ func Puzzle_One() (int, error) {
 	return result, nil
 }
 
-// Puzzle_Two returns the result of puzzle two of Sonar Sweep (day 1 of AoC)
+// PuzzleTwo returns the result of puzzle two of Sonar Sweep (day 1 of AoC)
 // It returns the number of sums of a three measurement sliding window
 // that are greater than the sum of the previous group of three numbers.
-func Puzzle_Two() (int, error) {
+func PuzzleTwo() (int, error) {
 	inputList, err := fileReader.ReadInput()
 	if err != nil {
 		return 0, err
@@ -68,11 +68,11 @@ func Puzzle_Two() (int, error) {
 }
 
 // func main() {
-// 	sol1, err := Puzzle_One()
+// 	sol1, err := PuzzleOne()
 // 	if err != nil {
 // 		fmt.Println("There was an error getting the solution to puzzle 1")
 // 	}
-// 	sol2, _ := Puzzle_Two()
+// 	sol2, _ := PuzzleTwo()
 // 	if err != nil {
 // 		fmt.Println("There was an error getting the solution to puzzle 2")
 // 	}
